@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use rand::prelude::*;
 
 use crate::{SnakeParts, components::{SnakePart, Direction}, DIMENSIONS, PLAYER_DIMENSIONS, BOUNDARY_WIDTH};
-use crate::components::{Food, Player, Score};
+use crate::components::{Player, Score};
 use crate::tail_spawner::tail_spawner;
 
 
