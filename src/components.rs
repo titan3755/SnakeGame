@@ -4,7 +4,7 @@ use bevy::prelude::*;
 pub struct Player;
 
 #[derive(Component)]
-pub struct SnakePart(pub usize);
+pub struct SnakePart;
 
 #[derive(Component)]
 pub struct Food(pub String);
@@ -25,7 +25,7 @@ pub struct Velocity {
 
 #[derive(Component)]
 pub enum Direction {
-   Up, Down, Left, Right, NoDir
+   Up, Down, Left, Right
 }
 
 #[derive(Component)]
@@ -37,9 +37,4 @@ pub struct PlayerSize {
 pub struct BoundaryWall(pub usize);
 
 #[derive(Default)]
-pub struct GameState {
-    pub winning_score: usize
-}
-
-#[derive(Default)]
-pub struct CoordList(pub Vec<(f32, f32)>);
+pub struct SnakeParts(pub Vec<Entity>);

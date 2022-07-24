@@ -4,27 +4,31 @@ use rand::prelude::*;
 use uuid::*;
 
 use crate::components::*;
-use crate::components::Direction::{NoDir};
-use crate::{BOUNDARY_WIDTH, DIMENSIONS, FOOD_DIMENSIONS, PLAYER_DIMENSIONS};
+use crate::components::Direction;
+use crate::{BOUNDARY_WIDTH, DIMENSIONS, FOOD_COLOR, FOOD_DIMENSIONS, PLAYER_DIMENSIONS, SCORE_COLOR, SCORE_TEXT_COLOR, SNAKE_COLOR};
+use crate::tail_spawner::tail_spawner;
 
-pub fn setup_system(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_system(mut commands: Commands, asset_server: Res<AssetServer>, mut tail_parts: ResMut<SnakeParts>) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());
-    commands.spawn_bundle(SpriteBundle{
-        sprite: Sprite {
-            color: Color::WHITE,
-            custom_size: Some(vec2(PLAYER_DIMENSIONS, PLAYER_DIMENSIONS)),
+    *tail_parts = SnakeParts(vec![
+        commands.spawn_bundle(SpriteBundle{
+            sprite: Sprite {
+                color: SNAKE_COLOR,
+                custom_size: Some(vec2(PLAYER_DIMENSIONS, PLAYER_DIMENSIONS)),
+                ..default()
+            },
+            transform: Transform {
+                translation: Vec3::new(thread_rng().gen_range((-(DIMENSIONS / 2.0) + (PLAYER_DIMENSIONS + BOUNDARY_WIDTH + 50.0)) as f32 .. ((DIMENSIONS / 2.0) - (PLAYER_DIMENSIONS + BOUNDARY_WIDTH + 50.0)) as f32), thread_rng().gen_range((-(DIMENSIONS / 2.0) + (PLAYER_DIMENSIONS + BOUNDARY_WIDTH + 50.0)) as f32 .. ((DIMENSIONS / 2.0) - (PLAYER_DIMENSIONS + BOUNDARY_WIDTH + 50.0)) as f32), 0.0),
+                ..default()
+            },
             ..default()
-        },
-        transform: Transform {
-            translation: Vec3::new(thread_rng().gen_range((-(DIMENSIONS / 2.0) + (PLAYER_DIMENSIONS + BOUNDARY_WIDTH)) as f32 .. ((DIMENSIONS / 2.0) - (PLAYER_DIMENSIONS + BOUNDARY_WIDTH)) as f32), thread_rng().gen_range((-(DIMENSIONS / 2.0) + (PLAYER_DIMENSIONS + BOUNDARY_WIDTH)) as f32 .. ((DIMENSIONS / 2.0) - (PLAYER_DIMENSIONS + BOUNDARY_WIDTH)) as f32), 0.0),
-            ..default()
-        },
-        ..default()
-    }).insert(Player).insert(NoDir).insert(Velocity{x: PLAYER_DIMENSIONS, y: PLAYER_DIMENSIONS}).insert(Score{value: 0}).insert(PlayerSize{value: 1});
+        }).insert(Player).insert(Direction::Right).insert(Velocity{x: PLAYER_DIMENSIONS, y: PLAYER_DIMENSIONS}).insert(Score{value: 0}).insert(PlayerSize{value: 1}).id(),
+        tail_spawner(&mut commands),
+    ]);
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite {
-            color: Color::RED,
+            color: FOOD_COLOR,
             custom_size: Some(vec2(10.0, 10.0)),
             ..default()
         },
@@ -47,7 +51,7 @@ pub fn setup_system(mut commands: Commands, asset_server: Res<AssetServer>) {
                         style: TextStyle {
                             font: asset_server.load("FiraCode-Bold.ttf"),
                             font_size: 20.0,
-                            color: Color::WHITE,
+                            color: SCORE_TEXT_COLOR,
                             ..Default::default()
                         },
                     },
@@ -56,7 +60,7 @@ pub fn setup_system(mut commands: Commands, asset_server: Res<AssetServer>) {
                         style: TextStyle {
                             font: asset_server.load("FiraCode-Medium.ttf"),
                             font_size: 20.0,
-                            color: Color::GOLD,
+                            color: SCORE_COLOR,
                             ..Default::default()
                         },
                     },
