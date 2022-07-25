@@ -21,7 +21,6 @@ use bevy::prelude::*;
 use bevy::window::{PresentMode, WindowMode};
 use bevy_embedded_assets::EmbeddedAssetPlugin;
 use rand::{Rng, thread_rng};
-use std::env;
 
 // File imports
 
@@ -53,7 +52,8 @@ pub const SCORE_COLOR: Color = Color::GOLD;
 pub const COORDVEC_PLACEHOLDER: (f32, f32) = (-1111.1111, -1111.1111);
 
 fn main() {
-    env::set_var("RUST_BACKTRACE", "full");
+    #[cfg(target_arch = "wasm32")]
+    console_error_panic_hook::set_once();
     App::new()
         .insert_resource(SnakeParts::default())
         .insert_resource(ClearColor{0: BG_COLOR})

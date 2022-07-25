@@ -32,3 +32,4 @@ features = [
 bevy = "0.7"
 rand = "0.8.5"
 bevy_embedded_assets = "0.3.0"
+console_error_panic_hook = "0.1"

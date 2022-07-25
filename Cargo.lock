@@ -2672,6 +2672,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_embedded_assets",
+ "console_error_panic_hook",
  "rand",
  "uuid 1.1.2",
 ]
